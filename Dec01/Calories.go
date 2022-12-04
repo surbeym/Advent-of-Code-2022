@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 )
 
@@ -18,7 +19,7 @@ func main() {
 
 	fileScanner.Split(bufio.ScanLines)
 
-	highestElf := 0
+	highestElves := make(map[int]int)
 
 	currentElf := 0
 	for fileScanner.Scan() {
@@ -27,17 +28,33 @@ func main() {
 		c, _ := strconv.Atoi(currentCount)
 
 		if len(currentCount) != 0 {
-			currentElf += c
+			i := highestElves[currentElf] + c
+			highestElves[currentElf] = i
 		} else {
-			if currentElf > highestElf {
-				highestElf = currentElf
-			}
-			currentElf = 0
+			currentElf++
+			highestElves[currentElf] = 0
 		}
-
 	}
-
 	readFile.Close()
 
-	fmt.Print(highestElf)
+	keys := make([]int, 0, len(highestElves))
+
+	for key := range highestElves {
+		keys = append(keys, key)
+	}
+
+	sort.Slice(keys, func(i, j int) bool {
+		return highestElves[keys[i]] > highestElves[keys[j]]
+	})
+
+	sum := 0
+	for i := 0; i < 3; i++ {
+
+		i2 := keys[i]
+		sum += highestElves[i2]
+	}
+
+	total := sum
+
+	fmt.Println(total)
 }
