@@ -16,57 +16,61 @@ func main() {
 
 	fileScanner.Split(bufio.ScanLines)
 
-	sum := 0
+	team := make(map[string]int)
+	member := 1
+
+	teams := make(map[int]string)
 	for fileScanner.Scan() {
-		backpack := fileScanner.Text()
-		packSize := len(backpack)
+		backpack1 := fileScanner.Text()
 
-		c1Size := packSize / 2
+		bpAlready := make(map[string]int)
 
-		c1 := backpack[0:c1Size]
-		c2 := backpack[c1Size:]
+		for i := 0; i < len(backpack1); i++ {
 
-		packContainsTwo := make(map[rune]bool)
+			charc := string(backpack1[i])
+			_, currentBp := bpAlready[charc]
 
-		for k := range c1 {
-			u := rune(c1[k])
-			packContainsTwo[u] = false
-		}
+			if !currentBp {
+				_, present := team[charc]
 
-		for k := range c2 {
-			u := rune(c2[k])
-			_, present := packContainsTwo[u]
+				if present {
+					team[charc] = team[charc] + 1
+				} else if member%3 == 1 {
+					team[charc] = 1
+				}
 
-			if present {
-				packContainsTwo[u] = true
+				bpAlready[charc] = 1
 			}
 		}
+		if member%3 == 0 {
+			teamNumber := member / 3
 
-		for k := range packContainsTwo {
-			if ok := !packContainsTwo[k]; ok {
-				delete(packContainsTwo, k)
-			}
-		}
-
-		//a == 97
-		//A == 65
-
-		for k := range packContainsTwo {
-			n := int(k)
-
-			if n > 96 {
-				n = n - 96
-			} else {
-				n = n - 64 + 26
+			for r, i := range team {
+				if i == 3 {
+					teams[teamNumber] = r
+				}
 			}
 
-			print(string(k) + " - ")
-			println(n)
-
-			sum = sum + n
+			team = make(map[string]int)
 		}
 
-		print(sum)
-
+		member++
 	}
+
+	sum := 0
+
+	for _, r := range teams {
+
+		n := int(rune(r[0]))
+
+		if n > 96 {
+			n = n - 96
+		} else {
+			n = n - 64 + 26
+		}
+
+		sum = sum + n
+	}
+
+	println(sum)
 }
