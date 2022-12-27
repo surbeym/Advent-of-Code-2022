@@ -35,14 +35,8 @@ func main() {
 
 		overlap := dupicates(all)
 
-		if len(c1) > len(c2) {
-			if len(overlap) == len(c2) {
-				count++
-			}
-		} else {
-			if len(overlap) == len(c1) {
-				count++
-			}
+		if len(overlap) > 0 {
+			count++
 		}
 	}
 
