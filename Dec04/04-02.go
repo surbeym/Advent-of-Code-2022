@@ -25,15 +25,15 @@ func main() {
 
 		p := strings.Split(pair, ",")
 
-		c1 := sectionNumbers(p[0])
-		c2 := sectionNumbers(p[1])
+		c1 := sectionNumbers2(p[0])
+		c2 := sectionNumbers2(p[1])
 
 		all := make([]int, 0)
 
 		all = append(all, c1...)
 		all = append(all, c2...)
 
-		overlap := dupicates(all)
+		overlap := dupicates2(all)
 
 		if len(overlap) > 0 {
 			count++
@@ -43,7 +43,7 @@ func main() {
 	println(count)
 }
 
-func dupicates(l []int) []int {
+func dupicates2(l []int) []int {
 	res := make(map[int]int)
 	for i := 0; i < len(l); i++ {
 		n := l[i]
@@ -66,7 +66,7 @@ func dupicates(l []int) []int {
 	return count
 }
 
-func sectionNumbers(s string) []int {
+func sectionNumbers2(s string) []int {
 	sl := strings.Split(s, "-")
 	start, _ := strconv.Atoi(sl[0])
 	end, _ := strconv.Atoi(sl[1])
