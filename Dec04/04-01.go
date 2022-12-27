@@ -36,11 +36,11 @@ func main() {
 		overlap := dupicates(all)
 
 		if len(c1) > len(c2) {
-			if overlap == len(c2) {
+			if len(overlap) == len(c2) {
 				count++
 			}
 		} else {
-			if overlap == len(c1) {
+			if len(overlap) == len(c1) {
 				count++
 			}
 		}
@@ -49,7 +49,7 @@ func main() {
 	println(count)
 }
 
-func dupicates(l []int) int {
+func dupicates(l []int) []int {
 	res := make(map[int]int)
 	for i := 0; i < len(l); i++ {
 		n := l[i]
@@ -62,10 +62,10 @@ func dupicates(l []int) int {
 		}
 	}
 
-	count := 0
-	for _, v := range res {
+	count := make([]int, 0)
+	for k, v := range res {
 		if v > 1 {
-			count++
+			count = append(count, k)
 		}
 	}
 
