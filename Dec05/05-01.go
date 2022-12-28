@@ -3,10 +3,16 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 	"strconv"
 	"strings"
 )
+
+var boxNum = 0
+var moveNum = 0
+
+var columns = make([][]string, 0)
 
 func main() {
 	readFile, err := os.Open("Dec05/input.txt")
@@ -18,40 +24,48 @@ func main() {
 
 	fileScanner.Split(bufio.ScanLines)
 
-	columns := make([][]string, 0)
-
 	row := 0
 	for fileScanner.Scan() {
 
 		li := fileScanner.Text()
 
-		if len(li) > 0 {
+		len := len(li)
+		if len > 0 {
 			// Map init boxes
 			if strings.Trim(li, " ")[0] == '[' {
-				colsForRow := (len(li)) / 3
+				x := float64(len) / 4
+				y := math.Ceil(x)
+				colsForRow := int(y)
 				columns = addBoxes(colsForRow, li, columns, row)
 				row++
 			}
 
 			if strings.HasPrefix(strings.Trim(li, " "), "move") {
-				columns = moveCommand(li, columns)
+				moveNum++
+				moveCommand(li)
+				println("Move: " + strconv.Itoa(moveNum))
 			}
 		}
 
-		if len(li) == 0 {
+		if len == 0 {
 			columns = transpose(columns)
 		}
 	}
 
+	printStack(columns)
+
+	//CMZ
+}
+
+func printStack(columns [][]string) {
 	for i := 0; i < len(columns); i++ {
 		a := columns[i]
 
 		if len(a) > 0 {
-			print(a[len(a)-1])
+			b := a[len(a)-1]
+			print(b[1:2])
 		}
 	}
-
-	//CMZ
 }
 
 func transpose(columns [][]string) [][]string {
@@ -75,10 +89,10 @@ func addBoxes(colsForRow int, li string, columns [][]string, row int) [][]string
 		start := 4 * i
 		end := 0
 
-		if i+1 < colsForRow {
-			end = 4 + 3*i
-		} else {
-			end = 5 + 3*i
+		end = start + 4
+
+		if len(li) < end {
+			end = len(li)
 		}
 
 		box := li[start:end]
@@ -98,7 +112,7 @@ func addBox(columns [][]string, box string, row int, totalCol int, col int) [][]
 
 	}
 	column := columns[col]
-	if box[0] == '[' {
+	if len(box) > 0 && box[0] == '[' {
 		column = append(column, box)
 
 	} else {
@@ -110,7 +124,7 @@ func addBox(columns [][]string, box string, row int, totalCol int, col int) [][]
 	return columns
 }
 
-func moveCommand(command string, columns [][]string) [][]string {
+func moveCommand(command string) [][]string {
 	mc := strings.Split(command, " ")
 
 	count, _ := strconv.Atoi(mc[1])
@@ -122,15 +136,14 @@ func moveCommand(command string, columns [][]string) [][]string {
 
 	removed := make([]string, 0)
 
-	for i := len(removeFrom) - 1; i > count-1; i-- {
+	rmLen := len(removeFrom)
+	for i := rmLen - 1; i >= rmLen-count; i-- {
 		back := removeFrom[i]
 		removed = append(removed, back)
 		removeFrom = append(removeFrom[:i])
 	}
 
-	for i := 0; i < count; i++ {
-		addTo = append(addTo, removed...)
-	}
+	addTo = append(addTo, removed...)
 
 	columns[from-1] = removeFrom
 	columns[to-1] = addTo
