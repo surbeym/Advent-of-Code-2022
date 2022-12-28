@@ -143,10 +143,19 @@ func moveCommand2(command string) [][]string {
 		removeFrom = append(removeFrom[:i])
 	}
 
+	removed = ReverseSlice(removed)
 	addTo = append(addTo, removed...)
 
 	columns2[from-1] = removeFrom
 	columns2[to-1] = addTo
 
 	return columns2
+}
+
+func ReverseSlice[T comparable](s []T) []T {
+	var r []T
+	for i := len(s) - 1; i >= 0; i-- {
+		r = append(r, s[i])
+	}
+	return r
 }
